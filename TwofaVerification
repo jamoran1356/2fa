@@ -1,0 +1,48 @@
+
+access(all) contract TwofaVerification {
+
+    // Public function to store and encrypt the user's 2FA code
+    access(all) fun createUser2FACode(email: String, code: Int): Bool {
+        let encryptedCode = // Encrypt the code using a strong encryption algorithm
+        let userAccount = getAccount(email)
+        userAccount.save2FACode(encryptedCode) // Store the encrypted code in the user's account
+        return true
+    }
+
+    // Public function to send the 2FA code to the user's email address
+    access(all) fun send2FACode(email: String, code: Int): Bool {
+        let userAccount = getAccount(email)
+        let encryptedCode = userAccount.get2FACode() // Retrieve the encrypted code from the user's account
+
+        // Use the Flow SDK to send an email containing the code and a transaction approval link
+        sendEmail(email, encryptedCode)
+        return true
+    }
+
+    // Public function to verify the user's 2FA code during transaction approval
+    access(all) fun verify2FACode(email: String, enteredCode: Int): Bool {
+        let userAccount = getAccount(email)
+        let encryptedCode = userAccount.get2FACode() // Retrieve the encrypted code from the user's account
+
+        let decryptedCode = // Decrypt the code using the encryption algorithm
+
+        // Compare the decrypted code with the code entered by the user
+        if decryptedCode == enteredCode {
+            return true // Codes match, transaction can be approved
+        } else {
+            return false // Codes don't match, transaction approval denied
+        }
+    }
+
+    // Private function to get the user's account
+    priv fun getAccount(email: String): Capability {
+        // Retrieve the user's account based on their email address
+        // You may have to implement or connect to a user management system for this step
+    }
+
+    // Private function to send an email using the Flow SDK
+    priv fun sendEmail(email: String, encryptedCode: String) {
+        // Use the Flow SDK or an external email service to send an email containing the 2FA code and transaction details
+    }
+
+}
